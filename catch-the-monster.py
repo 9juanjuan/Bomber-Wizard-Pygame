@@ -94,13 +94,21 @@ class Game:
             # moves monster, changing direction based on number generator
             monster_0.move(monster_x_dir, monster_y_dir, monster_moving)
             #draws monster at given position
-            monster_0.draw(self.game_screen)
+            if monster_0.dead == False:
+                monster_0.draw(self.game_screen)
             
 
             # move and draw more enemies when reach higher levels 
 
-            # end game if collision detected
-
+            # sets monster to dead if collision occurs 
+            if player_character.detect_collision(monster_0):
+                monster_0.dead = True 
+                # print ("collided")
+                # monster_0.monster_y_pos = -60
+                # monster_0.monster_y_pos = -60
+                # monster_moving = 0
+                # change_dir_countdown = 90000000
+                # stop_game = True
             pygame.display.update()
             clock.tick(60)
 
@@ -149,10 +157,24 @@ class PlayerCharacter (GameObject):
         elif self.y_pos >= 420:
             self.y_pos = 420
 
+    def detect_collision(self, other_body):
+        if self.y_pos > other_body.monster_y_pos + other_body.height:
+            return False
+        elif self.y_pos + self.height < other_body.monster_y_pos:
+            return False
+        
+        if self.x_pos > other_body.monster_x_pos + other_body.width:
+            return False
+        elif self.x_pos + self.width < other_body.monster_x_pos:
+            return False
+        
+        return True
+
         
 
 class Monster(GameObject): 
-    
+    dead = False 
+
     def __init__ (self, image_path, x, y, width, height):
         super().__init__(image_path, x, y, width, height)
 
