@@ -46,7 +46,10 @@ class Game:
 
         # Main game loop 
         while not stop_game:
-
+            if player_character.x_pos > 480:
+                x_dir = 0
+            elif player_character.y_pos < 30:
+                y_dir = 0
             change_dir_countdown = change_dir_countdown - 1
             for event in pygame.event.get():
 
@@ -63,6 +66,7 @@ class Game:
                         x_dir = -3
                     elif event.key == pygame.K_RIGHT:
                         x_dir = 3
+                        
                 # event handler for key release. Makes Y dir and X dir = 0
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP:
@@ -73,6 +77,7 @@ class Game:
                         x_dir = 0
                     elif event.key == pygame.K_RIGHT:
                         x_dir = 0
+            # count down that gives random integer, move function takes in random integer
             if change_dir_countdown == 0:
                 change_dir_countdown = 120
                 monster_moving = random.randint(1,4)
@@ -86,9 +91,11 @@ class Game:
             player_character.move(x_dir, y_dir) #, max_height, max_width)
             # Draws player at position
             player_character.draw(self.game_screen)
-
+            # moves monster, changing direction based on number generator
             monster_0.move(monster_x_dir, monster_y_dir, monster_moving)
+            #draws monster at given position
             monster_0.draw(self.game_screen)
+            
 
             # move and draw more enemies when reach higher levels 
 
@@ -97,19 +104,6 @@ class Game:
             pygame.display.update()
             clock.tick(60)
 
-
-        # Game logic
-        
-
-     
-
-        # Draw background
-        # Draw hero
-   
-        # Game display
-        # screen.blit(background_image, (0,0))
-        # screen.blit(hero_image,(240,226))
-        # screen.blit(monster_image, (monster_x_pos,monster_y_pos))
 
 
 
@@ -145,11 +139,15 @@ class PlayerCharacter (GameObject):
             self.x_pos += abs(x_dir)
         elif x_dir == -3:
             self.x_pos -= abs(x_dir)
-    def contain(self, x, y, x_dir, y_dir):
-        if x >= 500:
-        elif x <= 30:
-        elif y <= 30:
-        elif y >= 460: 
+        # blocks player movement from going past bushes in  background
+        if self.x_pos >= 450:
+            self.x_pos = 450
+        elif self.x_pos <= 30:
+            self.x_pos = 30
+        elif self.y_pos <= 30:
+            self.y_pos = 30
+        elif self.y_pos >= 420:
+            self.y_pos = 420
 
         
 
