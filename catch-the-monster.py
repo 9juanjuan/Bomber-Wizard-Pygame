@@ -1,7 +1,7 @@
 import pygame
 import random
 import time
-
+#comments
 SCREEN_TITLE = 'Catch the Monster'
 SCREEN_WIDTH = 512
 SCREEN_HEIGHT = 480
