@@ -7,6 +7,10 @@ SCREEN_WIDTH = 512
 SCREEN_HEIGHT = 480
 SCREEN_COLOR = (97, 159, 182)
 clock = pygame.time.Clock()
+pygame.mixer.init()
+sound = pygame.mixer.Sound('win.wav')
+pygame.font.init()
+font = pygame.font.SysFont('comicsans', 35)
 
 
 
@@ -103,12 +107,15 @@ class Game:
             # sets monster to dead if collision occurs 
             if player_character.detect_collision(monster_0):
                 monster_0.dead = True 
-                # print ("collided")
-                # monster_0.monster_y_pos = -60
-                # monster_0.monster_y_pos = -60
-                # monster_moving = 0
-                # change_dir_countdown = 90000000
-                # stop_game = True
+                sound.play()
+                text = font.render('You win! Press ENTER to play again!', True, SCREEN_COLOR)
+                self.game_screen.blit(text, (0, 200))
+                pygame.display.update()
+                clock.tick(1)
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        print('restart game')
+                
             pygame.display.update()
             clock.tick(60)
 
