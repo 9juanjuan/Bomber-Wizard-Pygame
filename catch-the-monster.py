@@ -1,7 +1,5 @@
 import pygame
 import random
-import time
-
 
 #Initializers
 
@@ -22,7 +20,7 @@ font = pygame.font.SysFont('comicsans', 35)
 
 
 
-
+# Main game class
 class Game: 
     def __init__ (self, image_path, title, width, height):
         self.title = title
@@ -42,8 +40,9 @@ class Game:
 
     clock = pygame.time.Clock()
     
-
+# Main game loop function
     def run_game_loop(self, level_count): 
+        #initializing variables 
         did_win = False
         stop_game = False 
         x_dir = 0
@@ -106,6 +105,8 @@ class Game:
                         x_dir = 0
                     elif event.key == pygame.K_RIGHT:
                         x_dir = 0
+                if event.type == pygame.QUIT:
+                    stop_game = True
             # count down that gives random integer, move function takes in random integer
             if change_dir_countdown == 0:
                 change_dir_countdown = 120
@@ -127,17 +128,17 @@ class Game:
                 player_character.draw(self.game_screen)
             # moves monster, changing direction based on number generator
             monster_0.move(monster_x_dir, monster_y_dir, monster_moving)
-            #draws monster at given position
+            # draws monster at given position
             if monster_0.dead == False:
                 monster_0.draw(self.game_screen)
             
+            # 
             goblin_0.move(goblin_x_dir, goblin_y_dir, goblin_moving)
             goblin_0.draw(self.game_screen)
             goblin_1.move(goblin_x_dir, goblin_y_dir, goblin_moving)
             goblin_1.draw(self.game_screen)
             goblin_2.move(goblin_x_dir, goblin_y_dir, goblin_moving)
             goblin_2.draw(self.game_screen)
-
 
             # move and draw more enemies when reach higher levels 
 
@@ -150,61 +151,62 @@ class Game:
                 goblin_4.move(goblin_x_dir, goblin_y_dir, goblin_moving)
                 goblin_4.draw(self.game_screen)
             
-
             # Player collides with monster 
             if  immunity_countdown < 0 and player_character.detect_collision(monster_0) :
                 # stop_game = True
                 monster_0.dead = True 
-                music.stop()
-                while monster_0.dead == True :
-                    win.play()
-                    break
-                # win.play()
+                # music.stop()
+                win.play()
+                # initializers set to 0 to inhibit movement 
+                x_dir = 0
+                y_dir = 0 
+                monster_x_dir = 0
+                monster_y_dir = 0
+                monster_moving = 0
+                goblin_x_dir = 0
+                goblin_y_dir = 0
+                goblin_moving = 0
                 text = font.render('You win! Press ENTER to play again!', True, TEXT_COLOR )
                 self.game_screen.blit(text, (43, 200))
-                # pygame.display.update()
-                clock.tick(1)
-                for event in pygame.event.get():
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_RETURN:
-                            print('restart game')
-                            new_game.run_game_loop(level_count+1)
-                    break
+                pygame.display.update()
+                clock.tick(60)
+                # On keypress run new game loop with higher difficulty
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        print('restart game')
+                        new_game.run_game_loop(level_count+1)
+            
+                    
            # Goblin collides with player                                 
-            elif goblin_0.detect_collision(player_character) and immunity_countdown < 0 or goblin_1.detect_collision(player_character) and immunity_countdown < 0 or goblin_2.detect_collision(player_character) and immunity_countdown < 0 or goblin_3.detect_collision(player_character) and immunity_countdown < 0 or goblin_4.detect_collision(player_character) and immunity_countdown < 0:
+            if goblin_0.detect_collision(player_character) and immunity_countdown < 0 or goblin_1.detect_collision(player_character) and immunity_countdown < 0 or goblin_2.detect_collision(player_character) and immunity_countdown < 0 or goblin_3.detect_collision(player_character) and immunity_countdown < 0 or goblin_4.detect_collision(player_character) and immunity_countdown < 0:
                 # stop_game = True
-                # did_win = False 
                 player_character.dead = True
-                music.stop()
-                while player_character.dead ==True:
-                    lose.play()
-                    text = font.render('You lose! Press ENTER to play again!', True, TEXT_COLOR)
-                    self.game_screen.blit(text, (43, 200))
-                # pygame.display.update()
-                    clock.tick(1)
-                    for event in pygame.event.get():
-                        if event.type == pygame.KEYDOWN:
-                            if event.key == pygame.K_RETURN:
-                               print('restart game')
-                               new_game.run_game_loop(1)
-                    break
-                # lose.play()
+                # music.stop()
+                lose.play()
+                x_dir = 0
+                y_dir = 0 
+                monster_x_dir = 0
+                monster_y_dir = 0
+                monster_moving = 0
+                goblin_x_dir = 0
+                goblin_y_dir = 0
+                goblin_moving = 0
+                text = font.render('You lose! Press ENTER to play again!', True, TEXT_COLOR)
+                self.game_screen.blit(text, (43, 200))
+                pygame.display.update()
+                clock.tick(60)
+                # On keypress restart game loop
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        print('restart game')
+                        new_game.run_game_loop(1)
                 
-                # break
-
+                    
+        
             pygame.display.update()
             clock.tick(60)
         
-        if did_win:
-            self.run_game_loop(level_count + 1)
-        else:
-            return
-
-
-
-
-
-
+# Generic game object parent class 
 class GameObject:
     def __init__(self, image_path, x, y, width, height):
         object_image = pygame.image.load(image_path)
@@ -220,8 +222,6 @@ class GameObject:
         background.blit(self.image, (self.x_pos, self.y_pos))
 
 class PlayerCharacter (GameObject): 
-    # x_dir = 2
-    # y_dir = 2
     dead = False
     def __init__(self, image_path, x, y, width, height):
         super().__init__(image_path, x, y, width, height)
@@ -257,8 +257,6 @@ class PlayerCharacter (GameObject):
             return False
         
         return True
-
-        
 
 class Monster(GameObject): 
     dead = False 
@@ -364,4 +362,4 @@ new_game = Game('background.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
 new_game.run_game_loop(1)
 
 pygame.quit()
-quit()
+# quit()
