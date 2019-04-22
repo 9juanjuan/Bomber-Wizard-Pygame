@@ -105,8 +105,7 @@ class Game:
                         x_dir = 0
                     elif event.key == pygame.K_RIGHT:
                         x_dir = 0
-                if event.type == pygame.QUIT:
-                    stop_game = True
+                
             # count down that gives random integer, move function takes in random integer
             if change_dir_countdown == 0:
                 change_dir_countdown = 120
@@ -201,7 +200,7 @@ class Game:
                         print('restart game')
                         new_game.run_game_loop(1)
                 
-                    
+
         
             pygame.display.update()
             clock.tick(60)
